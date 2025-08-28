@@ -9,7 +9,7 @@ function StudentPage({ user }) {
 
   const [student, setStudent] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [form, setForm] = useState({ name: "", age: "", course: "", image: "" });
+  const [form, setForm] = useState({ name: "", age: "", course: "", imageUrl: "" });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -24,7 +24,7 @@ function StudentPage({ user }) {
           name: data.name,
           age: data.age,
           course: data.course,
-          image: data.image || "",
+          imageUrl: data.imageUrl || "",
         });
       }
     };
@@ -47,7 +47,7 @@ function StudentPage({ user }) {
         name: form.name,
         age: form.age,
         course: form.course,
-        imageUrl: form.imageUrl, // directly use the URL
+        imageUrl: form.imageUrl,
       });
 
       setStudent({ ...form });
@@ -73,81 +73,101 @@ function StudentPage({ user }) {
     }
   };
 
-  if (!student) return <div className="container mt-4">Loading...</div>;
+  if (!student) return <div className="container mt-4 text-center">Loading...</div>;
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-5">
       {message && <div className="alert alert-info">{message}</div>}
-      {!editMode ? (
-        <>
+
+      <div className="card shadow-sm mx-auto" style={{ maxWidth: "500px" }}>
+        <div className="card-body text-center">
           <img
             src={student.imageUrl || "fallback.jpg"}
-            alt="Student"
-            className="img-thumbnail mb-3"
-            style={{ width: "200px", height: "200px", objectFit: "cover" }}
+            alt={student.name}
+            className="rounded-circle mb-3"
+            style={{ width: "150px", height: "150px", objectFit: "cover" }}
           />
-          <h2>{student.name}</h2>
-          <p>Email: {email}</p>
-          <p>Age: {student.age}</p>
-          <p>Course: {student.course}</p>
+          {!editMode ? (
+            <>
+              <h3 className="card-title mb-2">{student.name}</h3>
+              <p className="text-muted mb-1">Email: {email}</p>
+              <p className="text-muted mb-1">Age: {student.age}</p>
+              <p className="text-muted mb-3">Course: {student.course}</p>
 
-          {user?.isAdmin && (
-            <div className="mt-3">
-              <button className="btn btn-warning me-2" onClick={() => setEditMode(true)}>
-                Edit
-              </button>
-              <button className="btn btn-danger" onClick={handleDelete}>
-                Delete
-              </button>
-            </div>
+              {user?.isAdmin && (
+                <div className="d-flex justify-content-center gap-2">
+                  <button className="btn btn-warning" onClick={() => setEditMode(true)}>
+                    Edit
+                  </button>
+                  <button className="btn btn-danger" onClick={handleDelete}>
+                    Delete
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <form onSubmit={handleUpdate} className="text-start mt-3">
+              <div className="mb-2">
+                <label className="form-label">Name</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-2">
+                <label className="form-label">Age</label>
+                <input
+                  className="form-control"
+                  type="number"
+                  name="age"
+                  value={form.age}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-2">
+                <label className="form-label">Course</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="course"
+                  value={form.course}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Image URL</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="imageUrl"
+                  value={form.imageUrl}
+                  onChange={handleChange}
+                  placeholder="Enter image URL"
+                />
+              </div>
+
+              <div className="d-flex justify-content-center gap-2">
+                <button className="btn btn-success" disabled={loading}>
+                  {loading ? "Updating..." : "Update"}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setEditMode(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           )}
-        </>
-      ) : (
-        <form onSubmit={handleUpdate} className="mt-3">
-          <input
-            className="form-control mb-2"
-            type="text"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="form-control mb-2"
-            type="number"
-            name="age"
-            value={form.age}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="form-control mb-2"
-            type="text"
-            name="course"
-            value={form.course}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="form-control mb-2"
-            type="text"
-            name="imageUrl"
-            value={form.imageUrl}
-            onChange={handleChange}
-            placeholder="Enter image URL"
-          />
-          <button className="btn btn-success me-2" disabled={loading}>
-            {loading ? "Updating..." : "Update"}
-          </button>
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={() => setEditMode(false)}
-          >
-            Cancel
-          </button>
-        </form>
-      )}
+        </div>
+      </div>
     </div>
   );
 }

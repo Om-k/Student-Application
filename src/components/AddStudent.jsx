@@ -15,7 +15,7 @@ function AddStudent() {
     const studentRef = doc(db, "students", form.email);
     const studentSnap = await getDoc(studentRef);
     if (studentSnap.exists()) {
-      setMessage("Student already exists!");
+      setMessage("❌ Student already exists!");
       return;
     }
     await setDoc(studentRef, {
@@ -25,21 +25,82 @@ function AddStudent() {
       imageUrl: form.imageUrl,
       createdAt: serverTimestamp(),
     });
-    setMessage("Student added successfully!");
-    setForm({ email: "", name: "", age: "", course: "" });
+    setMessage("✅ Student added successfully!");
+    setForm({ email: "", name: "", age: "", course: "", imageUrl: "" });
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Add Student</h2>
-      {message && <div className="alert alert-info">{message}</div>}
-      <form onSubmit={handleSubmit} className="mt-3">
-        <input className="form-control mb-2" type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} required />
-        <input className="form-control mb-2" type="text" name="name" placeholder="Name" value={form.name} onChange={handleChange} required />
-        <input className="form-control mb-2" type="number" name="age" placeholder="Age" value={form.age} onChange={handleChange} required />
-        <input className="form-control mb-2" type="text" name="imageUrl" placeholder="ImageUrl" value={form.imageUrl} onChange={handleChange} required />
-        <button className="btn btn-primary">Add Student</button>
-      </form>
+    <div className="container d-flex justify-content-center mt-5">
+      <div className="card shadow-sm p-4" style={{ maxWidth: "500px", width: "100%" }}>
+        <div className="card-body">
+          <h2 className="mb-3 text-center">Add Student</h2>
+          {message && <div className="alert alert-info text-center">{message}</div>}
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label">Email</label>
+              <input
+                className="form-control"
+                type="email"
+                name="email"
+                placeholder="Enter email"
+                value={form.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Name</label>
+              <input
+                className="form-control"
+                type="text"
+                name="name"
+                placeholder="Enter name"
+                value={form.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Age</label>
+              <input
+                className="form-control"
+                type="number"
+                name="age"
+                placeholder="Enter age"
+                value={form.age}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Course</label>
+              <input
+                className="form-control"
+                type="text"
+                name="course"
+                placeholder="Enter course"
+                value={form.course}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Image URL</label>
+              <input
+                className="form-control"
+                type="text"
+                name="imageUrl"
+                placeholder="Enter image URL"
+                value={form.imageUrl}
+                onChange={handleChange}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary w-100">
+              Add Student
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
